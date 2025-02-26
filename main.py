@@ -44,8 +44,8 @@ def main():
             linhas = arquivo_txt.readlines()
 
         # Define o caminho de saída do XML
-        pasta_script = os.path.dirname(os.path.abspath(__file__))
-        pasta_xmls = os.path.join(pasta_script, 'xmls')
+        desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+        pasta_xmls = os.path.join(desktop_path, 'xmls')
         nome_arquivo_xml = os.path.splitext(os.path.basename(caminho_txt))[0] + '.xml'
         caminho_saida = os.path.join(pasta_xmls, nome_arquivo_xml)
 
