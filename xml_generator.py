@@ -34,7 +34,7 @@ def gerar_xml(linhas, caminho_saida):
         xml += '    </contas>\n'
         xml += '</documento>'
 
-        # Salva o XML na pasta script/xmls
+        # Salva o XML no local especificado pelo usuário
         os.makedirs(os.path.dirname(caminho_saida), exist_ok=True)
         with open(caminho_saida, 'w', encoding='utf-8') as arquivo_xml:
             arquivo_xml.write(xml)
