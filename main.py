@@ -1,7 +1,7 @@
 import os
 import logging
 from tkinter import Tk
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 from xml_generator import gerar_xml  # Import the XML generation function from the new module
 
 # Configure logging
@@ -21,6 +21,24 @@ def solicitar_arquivo_txt():
         return caminho_txt
     else:
         logging.error("Nenhum arquivo selecionado. O programa será encerrado.")
+        exit()
+
+def solicitar_local_para_salvar(nome_sugerido):
+    # Oculta a janela root do Tkinter
+    Tk().withdraw()
+    
+    # Abre a caixa de diálogo para salvar o arquivo
+    caminho_saida = asksaveasfilename(
+        title="Salvar arquivo XML como",
+        defaultextension=".xml",
+        initialfile=nome_sugerido,
+        filetypes=[("Arquivo XML", "*.xml")]  # Filtra apenas arquivos .xml
+    )
+    
+    if caminho_saida:
+        return caminho_saida
+    else:
+        logging.error("Nenhum local de salvamento selecionado. O programa será encerrado.")
         exit()
 
 def processar_linha(linha):
@@ -43,11 +61,11 @@ def main():
         with open(caminho_txt, 'r', encoding='utf-8') as arquivo_txt:
             linhas = arquivo_txt.readlines()
 
-        # Define o caminho de saída do XML
-        desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-        pasta_xmls = os.path.join(desktop_path, 'xmls')
-        nome_arquivo_xml = os.path.splitext(os.path.basename(caminho_txt))[0] + '.xml'
-        caminho_saida = os.path.join(pasta_xmls, nome_arquivo_xml)
+        # Sugere o nome do arquivo XML baseado no nome do arquivo .txt
+        nome_arquivo_sugerido = os.path.splitext(os.path.basename(caminho_txt))[0] + '.xml'
+
+        # Solicita o local para salvar o arquivo XML
+        caminho_saida = solicitar_local_para_salvar(nome_arquivo_sugerido)
 
         # Gera e salva o XML
         gerar_xml(linhas, caminho_saida)
