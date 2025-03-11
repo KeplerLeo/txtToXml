@@ -5,10 +5,22 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def processar_linha(linha):
-    """Process a line and extract the account code and formatted balance"""
+    """Process a line and extract the account code and consolidated balance"""
     codigo_conta = linha[:10].strip()
-    saldo = int(linha[14:32].strip() or '0')
-    saldo_formatado = f"{saldo / 100:.2f}"
+    
+    def extrair_valor(valor_str):
+        valor = int(valor_str[:-1].strip() or '0')
+        return valor if valor_str[-1] == '+' else -valor
+
+    saldo1 = extrair_valor(linha[14:33])  # Adjusted index to include the last digit
+    saldo2 = extrair_valor(linha[33:52])  # Adjusted index to include the last digit
+    saldo3 = extrair_valor(linha[52:71])  # Adjusted index to include the last digit
+
+    saldo_total = saldo1 + saldo2 + saldo3
+    saldo_formatado = f"{saldo_total / 100:.2f}"
+    if saldo_total < 0:
+        saldo_formatado = f"-{abs(saldo_total) / 100:.2f}"
+
     return codigo_conta, saldo_formatado
 
 def gerar_xml(linhas, caminho_saida):
